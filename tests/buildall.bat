@@ -1,0 +1,12 @@
+..\bin\Debug\net10.0\db2k 01_spinning_cube\test.glsl
+..\bin\Debug\net10.0\db2k 02_audio_sync\test.glsl
+..\bin\Debug\net10.0\db2k 03_textures\test.glsl
+..\bin\Debug\net10.0\db2k 04_splash_screen\test.glsl
+..\bin\Debug\net10.0\db2k 05_glsl_include\test.glsl
+..\bin\Debug\net10.0\db2k 06_basic_js\test.glsl
+..\bin\Debug\net10.0\db2k 07_uniform_usage\test.js
+..\bin\Debug\net10.0\db2k 08_invalid_still_refresh\test.glsl
+..\bin\Debug\net10.0\db2k 09_multiple_shaders\test.js
+..\bin\Debug\net10.0\db2k 10_circular_include\test.glsl
+..\bin\Debug\net10.0\db2k 11_uniform_arrays\test.glsl
+..\bin\Debug\net10.0\db2k 12_failing\test.glsl

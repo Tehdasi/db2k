@@ -1,0 +1,4 @@
+﻿- catch glsl load errors, so can still monitor to reload
+- //#include for js
+
+- graceful failure when somehthing else is using port 6969
