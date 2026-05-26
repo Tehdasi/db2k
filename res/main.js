@@ -309,7 +309,7 @@ function initShader(sh)
 
     sh._.textures.forEach(t => {
         var name = t.name;
-        var dataUri = "data:text/plain;base64," + t.data;
+        var dataUri = "data:image/png;base64," + t.data;
 
         const img = new Image();
         img.onload = function () {
