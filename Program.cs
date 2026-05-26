@@ -28,60 +28,61 @@ void HttpThread()
         HttpListenerRequest req = context.Request;
         HttpListenerResponse resp = context.Response;
 
-        if (req.Url == null)
-            continue;
-
-        string reqPath = req.Url.AbsolutePath;
-
-
-        Debug.WriteLine($"req: {req.Url}");
-
-        if (reqPath.StartsWith("/updated"))
+        if (req.Url != null)
         {
-            if (htmlChanged)
+            string reqPath = req.Url.AbsolutePath;
+
+
+            Debug.WriteLine($"req: {req.Url}");
+
+            if (reqPath.StartsWith("/updated"))
             {
-                resp.StatusCode = 205;
-                htmlChanged = false;
-            }
-            else
-                resp.StatusCode = 204;
-
-            resp.AddHeader("Access-Control-Allow-Origin", "*");
-
-            resp.Close();
-        }
-        else if (reqPath == "/testfinished")
-        {
-            gotTestRequest = true;
-        }
-        else if (reqPath == "/index.html" || reqPath == "/")
-        {
-            string txt = null;
-
-            if (File.Exists(outFile))
-            {
-                try
+                if (htmlChanged)
                 {
-                    txt = File.ReadAllText(outFile);
+                    resp.StatusCode = 205;
+                    htmlChanged = false;
                 }
-                catch (Exception e)
-                {
-                    txt = "Couldn't read outfile";
-                }
+                else
+                    resp.StatusCode = 204;
+
+                resp.AddHeader("Access-Control-Allow-Origin", "*");
+
+                resp.Close();
             }
-            else
+            else if (reqPath == "/testfinished")
             {
-                txt = $"<html><body>{outFile} not built</body></html>";
+                gotTestRequest = true;
+                resp.Close();
             }
+            else if (reqPath == "/index.html" || reqPath == "/")
+            {
+                string txt = null;
 
-            byte[] data = Encoding.UTF8.GetBytes(txt);
-            resp.ContentType = "text/html";
-            resp.ContentEncoding = Encoding.UTF8;
-            resp.ContentLength64 = data.LongLength;
-            resp.AddHeader("Access-Control-Allow-Origin", "localhost");
+                if (File.Exists(outFile))
+                {
+                    try
+                    {
+                        txt = File.ReadAllText(outFile);
+                    }
+                    catch (Exception e)
+                    {
+                        txt = "Couldn't read outfile";
+                    }
+                }
+                else
+                {
+                    txt = $"<html><body>{outFile} not built</body></html>";
+                }
 
-            resp.OutputStream.Write(data, 0, data.Length);
-            resp.Close();
+                byte[] data = Encoding.UTF8.GetBytes(txt);
+                resp.ContentType = "text/html";
+                resp.ContentEncoding = Encoding.UTF8;
+                resp.ContentLength64 = data.LongLength;
+                resp.AddHeader("Access-Control-Allow-Origin", "localhost");
+
+                resp.OutputStream.Write(data, 0, data.Length);
+                resp.Close();
+            }
         }
     }
 }
@@ -214,7 +215,8 @@ int Run()
                             Thread.Sleep(100);
                         }
 
-                        chromeProcess.Kill();
+                        if( !chromeProcess.HasExited )
+                            chromeProcess.Kill();
                         Thread.Sleep(100);
                         outFile = null;
                     }
@@ -297,7 +299,7 @@ int Run()
 
         var res = db.Build(ref results);
 
-        return res ? 1 : 0;
+        return res ? 0 : 1;
     }
 }
 

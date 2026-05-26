@@ -115,7 +115,7 @@ public class DemoBuilder
         return File.ReadAllLines(filename);
     }
 
-    void IncludeGlsl( Shader shader, string filename, bool mainFile, string sourceFile, int sourceLine)
+    void IncludeGlsl( Shader shader, string filename, bool isMainFile, string sourceFile, int sourceLine)
     {
         if (shader.includedGlslFiles.Contains(filename))
             return;
@@ -224,7 +224,7 @@ public class DemoBuilder
                         shader.glslLines.Insert(0, new () { text = $"uniform sampler2D {varName};", srcLineNumber = 0, srcFilename = "generated" });
                     }
                 }
-                else if (jsMatch.Success && mainFile)
+                else if (jsMatch.Success && isMainFile)
                 {
                     var fn = jsMatch.Groups[1].Value;
 
@@ -332,11 +332,10 @@ public class DemoBuilder
 
             glslMain = mainFile.EndsWith(".glsl");
 
-            var sw = new StreamWriter(File.Create(outFile));
+            using var sw = new StreamWriter(File.Create(outFile));
 
             string[] htmlLines = Resources.index_html.ToArray();
             string[] jsLines = Resources.main_js.ToArray();
-            List<string> uniformLines = [];
 
 
             if ( glslMain )
@@ -398,8 +397,8 @@ public class DemoBuilder
             foreach (var shader in shaders)
             {
                 jsExtraLines.Add( $"\tinitShader({shader.name});" );
-                foreach (var u in shader.uniforms)
-                    uniformLines.Add($"uniform {u.glslType} {u.name};");
+                //foreach (var u in shader.uniforms)
+                //    uniformLines.Add($"uniform {u.glslType} {u.name};");
             }
             jsExtraLines.Add("};");
             jsExtraLines.Add("");
@@ -502,8 +501,6 @@ public class DemoBuilder
 
 
 
-
-            sw.Close();
 
             results += $"{Time()}: Build Done! (tt:{DateTime.Now - start})";
         }
